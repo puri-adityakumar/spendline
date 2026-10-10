@@ -27,7 +27,7 @@ export function SiteHeader() {
           >
             Spendline
           </span>
-          <span className="hidden truncate text-xs text-muted-foreground sm:inline">Team token ledger</span>
+          <span className="hidden truncate text-xs text-muted-foreground sm:inline">Invoice ledger</span>
         </Link>
         <nav className="ml-auto flex items-center gap-0.5">
           {links.map((link) => (

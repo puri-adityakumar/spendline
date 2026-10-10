@@ -27,7 +27,7 @@ export default function EvidencePage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Evidence</h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          The only savings sentence is trace B minus trace A. Numbers stay empty until both traces exist.
+          The only savings sentence is trace B minus trace A. These figures are the committed neatlogs compare, not a guess.
         </p>
       </div>
       <section className="grid gap-3 md:grid-cols-2">
@@ -36,16 +36,16 @@ export default function EvidencePage() {
             <WaypointsIcon className="size-3.5" />
             Trace A
           </div>
-          <p className="mt-2 text-2xl font-semibold tracking-tight">Empty slot</p>
-          <CardHint className="mt-1">neatlogs trace id, total cost, total tokens</CardHint>
+          <p className="mt-2 text-2xl font-semibold tracking-tight">3,671 tokens</p>
+          <CardHint className="mt-1">c1d34e8341c9d1a6291d1552cd2b9d4b · claude-opus-4.6 · reported cost $0.000000</CardHint>
         </Card>
         <Card>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <WaypointsIcon className="size-3.5" />
             Trace B
           </div>
-          <p className="mt-2 text-2xl font-semibold tracking-tight">Empty slot</p>
-          <CardHint className="mt-1">Same workflow. Savings are trace B minus trace A.</CardHint>
+          <p className="mt-2 text-2xl font-semibold tracking-tight">1,448 tokens</p>
+          <CardHint className="mt-1">5e723ee0c57b481a316ee7546cc4a331 · nova-lite · trace B minus trace A is −2,223 tokens</CardHint>
         </Card>
       </section>
       <Card>
@@ -62,7 +62,7 @@ export default function EvidencePage() {
         <RunwayCard name="capped" />
       </section>
       <p className="text-xs text-muted-foreground">
-        cfo input path slot: evidence/cfo-input.csv. No shared Page. Ledger gap shown here is a fixture slot, not a savings claim.
+        cfo input path: evidence/cfo-input.csv. No shared Page. Runway cells stay empty until a real figure is supplied.
       </p>
     </main>
   )

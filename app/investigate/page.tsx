@@ -6,56 +6,76 @@ import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardHint, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { investigateSnapshots, people, runSteps, usd, type RunSnapshot } from "@/lib/fixtures"
 
-function startRun(mode: "investigate" | "fix"): { mode: "investigate" | "fix" } {
-  const body: { mode: "investigate" | "fix" } = mode === "fix" ? { mode: "fix" } : { mode: "investigate" }
-  // BACKEND: connect POST /api/runs here
-  return body
+const steps = ["plan", "ingest", "trace", "reconcile", "act", "verify"] as const
+
+type RunStatus = "pending" | "active" | "done" | "error"
+
+type RunSnapshot = {
+  id: string
+  step: (typeof steps)[number]
+  status: RunStatus
+  detail: string
+  outbox: string | null
 }
 
-function readRun(id: string, index: number): RunSnapshot {
-  // BACKEND: connect GET /api/runs/:id here
-  const snapshot = investigateSnapshots[index] ?? investigateSnapshots[0]
-  return snapshot.id === id ? snapshot : investigateSnapshots[0]
+async function startRun(mode: "investigate" | "fix"): Promise<{ id: string }> {
+  const body = { mode: mode === "fix" ? "fix" : "investigate" } as const
+  const response = await fetch("/api/runs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  })
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => null)) as { error?: string } | null
+    throw new Error(payload?.error ?? `POST /api/runs returned ${response.status}`)
+  }
+  return (await response.json()) as { id: string }
+}
+
+async function readRun(id: string): Promise<RunSnapshot> {
+  const response = await fetch(`/api/runs/${id}`)
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => null)) as { error?: string } | null
+    throw new Error(payload?.error ?? `GET /api/runs/${id} returned ${response.status}`)
+  }
+  return (await response.json()) as RunSnapshot
 }
 
 export function InvestigateScreen({
-  snapshotIndex,
+  snapshot,
   mode,
-  person,
-  onRunFix,
+  team,
+  error,
+  onRun,
 }: {
-  snapshotIndex: number
+  snapshot: RunSnapshot | null
   mode: "investigate" | "fix"
-  person?: string | null
-  onRunFix?: () => void
+  team?: string | null
+  error?: string | null
+  onRun?: (mode: "investigate" | "fix") => void
 }) {
-  const snapshot = readRun("run-fixture", snapshotIndex)
-  const stepIndex = runSteps.indexOf(snapshot.step)
+  const stepIndex = snapshot ? steps.indexOf(snapshot.step) : -1
 
   return (
     <main className="mx-auto grid w-full min-w-0 max-w-6xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[14rem_1fr]">
       <ol className="space-y-3">
-        {runSteps.map((step, index) => {
-          const done = index < stepIndex || (index === stepIndex && snapshot.status === "done")
-          const active = index === stepIndex && snapshot.status !== "done"
-          const error = active && snapshot.status === "error"
+        {steps.map((step, index) => {
+          const done = snapshot ? index < stepIndex || (index === stepIndex && snapshot.status === "done") : false
+          const active = snapshot ? index === stepIndex && snapshot.status !== "done" : false
+          const failed = active && snapshot?.status === "error"
           return (
             <li key={step} className="flex items-center gap-2 text-sm">
               <span
                 className={
                   done
                     ? "flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground"
-                    : error
-                      ? "flex size-7 items-center justify-center rounded-full bg-destructive text-white"
-                      : active
-                        ? "flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-ring/30"
-                        : "flex size-7 items-center justify-center rounded-full border-2 border-border text-muted-foreground"
+                    : failed
+                      ? "flex size-7 items-center justify-center rounded-full bg-destructive text-destructive-foreground"
+                      : "flex size-7 items-center justify-center rounded-full border-2 border-border text-muted-foreground"
                 }
               >
-                {done ? <CheckIcon className="size-3.5" /> : error ? "!" : active ? <Loader2Icon className="size-3.5 animate-spin" /> : index + 1}
+                {done ? <CheckIcon className="size-3.5" /> : failed ? "!" : active ? <Loader2Icon className="size-3.5 animate-spin" /> : index + 1}
               </span>
               <span className={active || done ? "text-foreground" : "text-muted-foreground"}>{step}</span>
             </li>
@@ -67,66 +87,31 @@ export function InvestigateScreen({
           <div>
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Investigate</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Local player. The person query is UI only. The run covers the whole team.
+              Runs call POST /api/runs and poll GET /api/runs/:id. The invoice file is the ledger those runs read.
+              {team ? ` Team ${team}.` : ""}
             </p>
           </div>
-          <Button type="button" onClick={onRunFix}>
-            Run fix
-          </Button>
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" onClick={() => onRun?.("investigate")}>
+              Run investigate
+            </Button>
+            <Button type="button" onClick={() => onRun?.("fix")}>
+              Run fix
+            </Button>
+          </div>
         </div>
         <Card size="sm">
           <div className="flex items-center justify-between gap-3">
-            <CardTitle className="capitalize">{snapshot.step}</CardTitle>
-            <Badge variant={snapshot.status === "error" ? "destructive" : snapshot.status === "done" ? "default" : "secondary"}>
-              {snapshot.status}
+            <CardTitle className="capitalize">{snapshot?.step ?? "Idle"}</CardTitle>
+            <Badge variant={snapshot?.status === "error" ? "destructive" : snapshot?.status === "done" ? "default" : "secondary"}>
+              {snapshot?.status ?? mode}
             </Badge>
           </div>
-          <CardHint className="mt-2">{snapshot.detail}</CardHint>
-          {snapshot.outbox ? <p className="mt-2 font-mono text-xs">{snapshot.outbox}</p> : null}
+          <CardHint className="mt-2">{error ?? snapshot?.detail ?? "No run yet."}</CardHint>
+          {snapshot?.outbox ? <p className="mt-2 font-mono text-xs">{snapshot.outbox}</p> : null}
           <p className="mt-2 text-xs text-muted-foreground">
-            Local body {mode === "fix" ? '{ mode: "fix" }' : '{ mode: "investigate" }'}
-            {person ? ` · person ${person}` : ""}
+            {mode === "fix" ? '{ mode: "fix" }' : '{ mode: "investigate" }'}
           </p>
-        </Card>
-        <Card>
-          <CardTitle>Findings</CardTitle>
-          <div className="mt-3">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Person</TableHead>
-                  <TableHead>Badge</TableHead>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Fixture</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {snapshot.findings.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-muted-foreground">
-                      Findings appear after reconcile.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  snapshot.findings.map((finding) => {
-                    const name = people.find((personRow) => personRow.id === finding.personId)?.name ?? finding.personId
-                    return (
-                      <TableRow key={`${finding.personId}-${finding.badge}`}>
-                        <TableCell>{name}</TableCell>
-                        <TableCell>
-                          <Badge variant="destructive">{finding.badge}</Badge>
-                        </TableCell>
-                        <TableCell>{finding.title}</TableCell>
-                        <TableCell className="tabular-nums">{usd(finding.amountUsd)}</TableCell>
-                        <TableCell>{finding.fixture ? "fixture" : "—"}</TableCell>
-                      </TableRow>
-                    )
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </div>
         </Card>
       </div>
     </main>
@@ -134,41 +119,52 @@ export function InvestigateScreen({
 }
 
 export default function InvestigatePage() {
-  const [index, setIndex] = useState(0)
+  const [snapshot, setSnapshot] = useState<RunSnapshot | null>(null)
   const [mode, setMode] = useState<"investigate" | "fix">("investigate")
-  const [person, setPerson] = useState<string | null>(null)
-  const [pinned, setPinned] = useState(false)
+  const [team, setTeam] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [runId, setRunId] = useState<string | null>(null)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    setPerson(params.get("person"))
-    const at = params.get("at")
-    if (at !== null && at !== "") {
-      const next = Number(at)
-      if (!Number.isNaN(next)) {
-        setIndex(Math.min(Math.max(next, 0), investigateSnapshots.length - 1))
-        setPinned(true)
-      }
-    }
+    setTeam(params.get("team"))
   }, [])
 
   useEffect(() => {
-    if (pinned || index >= investigateSnapshots.length - 1) return
-    const timer = window.setTimeout(() => setIndex((value) => value + 1), 900)
-    return () => window.clearTimeout(timer)
-  }, [index, pinned])
+    if (!runId) return
+    let stopped = false
+    const timer = window.setInterval(() => {
+      void readRun(runId)
+        .then((next) => {
+          if (stopped) return
+          setSnapshot(next)
+          if (next.step === "verify" && next.status === "done") {
+            window.clearInterval(timer)
+          }
+        })
+        .catch((cause: unknown) => {
+          if (stopped) return
+          setError(cause instanceof Error ? cause.message : "Run poll failed")
+        })
+    }, 700)
+    return () => {
+      stopped = true
+      window.clearInterval(timer)
+    }
+  }, [runId])
 
-  return (
-    <InvestigateScreen
-      snapshotIndex={index}
-      mode={mode}
-      person={person}
-      onRunFix={() => {
-        const body = startRun("fix")
-        setMode(body.mode)
-        setIndex(0)
-        setPinned(false)
-      }}
-    />
-  )
+  async function onRun(nextMode: "investigate" | "fix") {
+    setMode(nextMode)
+    setError(null)
+    setSnapshot(null)
+    try {
+      const created = await startRun(nextMode)
+      setRunId(created.id)
+      setSnapshot(await readRun(created.id))
+    } catch (cause: unknown) {
+      setError(cause instanceof Error ? cause.message : "Run failed")
+    }
+  }
+
+  return <InvestigateScreen snapshot={snapshot} mode={mode} team={team} error={error} onRun={onRun} />
 }

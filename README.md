@@ -1,6 +1,6 @@
 # spendline
 
-Fixture screens read `lib/fixtures.ts`. Auth and run routes are not connected yet. The login and investigate pages mark `POST /api/auth`, `POST /api/runs`, and `GET /api/runs/:id` for a later hook-up.
+Home, team pages, and charts read `ledger/invoices.csv` (five teams, July through September 2026). Login posts `{ "password" }` to `/api/auth`. Investigate posts `{ "mode" }` to `/api/runs` and polls `GET /api/runs/:id`.
 
 ```bash
 npm install

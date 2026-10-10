@@ -25,7 +25,7 @@ const museo = MuseoModerno({
 
 export const metadata: Metadata = {
   title: "Spendline",
-  description: "Team token ledger for a five-person fixture.",
+  description: "Invoice ledger for five teams, July through September 2026.",
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -38,8 +38,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div className="min-w-0 flex-1">{children}</div>
             <footer className="border-t px-4 py-4 text-xs text-muted-foreground sm:px-6">
               <div className="mx-auto flex min-w-0 max-w-6xl flex-wrap items-center justify-between gap-2">
-                <span>Team token ledger</span>
-                <span>Fixture screens</span>
+                <span>Invoice ledger</span>
+                <span>Jul 2026 – Sep 2026</span>
               </div>
             </footer>
           </div>

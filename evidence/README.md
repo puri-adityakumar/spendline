@@ -1,6 +1,6 @@
 # Evidence
 
-What each file here proves. Spend numbers on the Spendline screens come from a fixture ledger, not a real bill. The only measured saving is trace B minus trace A.
+What each file here proves. Spend numbers on the Spendline screens come from `ledger/invoices.csv`, a seeded ledger rather than a vendor bill. The only measured saving is trace B minus trace A.
 
 | File | Proves | How it is made |
 | --- | --- | --- |

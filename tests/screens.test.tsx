@@ -7,36 +7,44 @@ import EvidencePage from "../app/evidence/page"
 import { LoginScreen } from "../app/login/page"
 import { PersonScreen } from "../app/team/[person]/page"
 import { InvestigateScreen } from "../app/investigate/page"
-import { dailyBilled, investigateSnapshots, people } from "../lib/fixtures"
+import { invoiceScreen } from "../lib/ledger/screen"
 
-const peopleIds = ["maya-chen", "jonah-patel", "priya-shah", "sam-ortiz", "alex-kim"] as const
+const teamIds = ["support", "backend", "growth", "data", "ops"] as const
 
 describe("dashboard", () => {
+  const ledger = invoiceScreen()
   const html = renderToStaticMarkup(<HomePage />)
 
-  it("shows the screen headline", () => {
-    expect(html).toContain("8.1M")
-    expect(html).toContain("$237")
-    expect(html).toContain("$188")
-    expect(html).toContain("$49")
+  it("shows the invoice file totals", () => {
+    expect(ledger.rows).toBe(8032)
+    expect(ledger.tokens).toBe(21270693)
+    expect(ledger.costCents).toBe(4109)
+    expect(ledger.start).toBe("2026-07-01")
+    expect(ledger.end).toBe("2026-09-30")
+    expect(html).toContain("21,270,693")
+    expect(html).toContain("$41.09")
+    expect(html).toContain("8,032")
+    expect(html).not.toContain("8.1M")
+    expect(html).not.toContain("$237")
+    expect(html).not.toContain("$188")
+    expect(html).not.toContain("$49")
+    expect(html).not.toContain("Maya")
   })
 
-  it("links the five people", () => {
-    for (const id of peopleIds) {
+  it("links the five invoice teams", () => {
+    expect(ledger.teams.map((team) => team.id).sort()).toEqual([...teamIds].sort())
+    for (const id of teamIds) {
       expect(html).toContain(`/team/${id}`)
     }
-    expect(html).toContain("Maya Chen")
-    expect(html).toContain("Jonah Patel")
-    expect(html).toContain("Priya Shah")
-    expect(html).toContain("Sam Ortiz")
-    expect(html).toContain("Alex Kim")
+    for (const name of ["Support", "Backend", "Growth", "Data", "Ops"]) {
+      expect(html).toContain(name)
+    }
   })
 
-  it("renders 14 daily bars that sum to 237", () => {
-    expect(dailyBilled).toHaveLength(14)
-    expect(dailyBilled.reduce((sum, value) => sum + value, 0)).toBe(237)
-    const amounts = [...html.matchAll(/data-day-billed="(\d+)"/g)].map((match) => Number(match[1]))
-    expect(amounts).toEqual(dailyBilled)
+  it("renders monthly bars that sum to the invoice cost", () => {
+    const amounts = [...html.matchAll(/data-month-cents="(\d+)"/g)].map((match) => Number(match[1]))
+    expect(amounts).toEqual(ledger.months.map((month) => month.costCents))
+    expect(amounts.reduce((sum, value) => sum + value, 0)).toBe(4109)
   })
 })
 
@@ -52,95 +60,48 @@ describe("login", () => {
   })
 })
 
-describe("person page", () => {
-  it("shows the ledger columns", () => {
-    const html = renderToStaticMarkup(<PersonScreen personId="maya-chen" />)
-    for (const column of ["day", "model", "key", "tokens", "billed", "traced"]) {
+describe("team page", () => {
+  it("shows invoice columns for a team and the team total", () => {
+    const html = renderToStaticMarkup(<PersonScreen personId="support" />)
+    for (const column of ["model", "rows", "tokens", "cost", "day"]) {
       expect(html.toLowerCase()).toContain(column)
     }
-    expect(html).toContain("Investigate")
-    expect(html).toContain("/investigate?person=maya-chen")
+    const support = invoiceScreen().teams.find((team) => team.id === "support")
+    expect(support).toBeTruthy()
+    expect(html).toContain("Support")
+    expect(html).toContain("/investigate?team=support")
+    expect(html).not.toContain("Maya")
+    expect(html).not.toContain("fixture")
   })
 
-  it("marks anomalies destructive and normal rows secondary", () => {
-    const maya = renderToStaticMarkup(<PersonScreen personId="maya-chen" />)
-    const jonah = renderToStaticMarkup(<PersonScreen personId="jonah-patel" />)
-    const priya = renderToStaticMarkup(<PersonScreen personId="priya-shah" />)
-    const sam = renderToStaticMarkup(<PersonScreen personId="sam-ortiz" />)
-    const alex = renderToStaticMarkup(<PersonScreen personId="alex-kim" />)
-
-    expect(maya).toContain('data-badge="destructive"')
-    expect(maya).toContain("support_draft")
-    expect(jonah).toContain('data-badge="destructive"')
-    expect(jonah).toContain("intent_classify")
-    expect(priya).not.toContain('data-badge="destructive"')
-    expect(priya).toContain('data-badge="secondary"')
-    expect(sam).not.toContain('data-badge="destructive"')
-    expect(sam).toContain('data-badge="secondary"')
-    expect(alex).toContain('data-badge="destructive"')
-    expect(alex).toContain("fixture")
-    expect(alex).toContain("$19")
-    expect(alex).toContain("$27")
-  })
-
-  it("knows all five contract ids", () => {
-    expect(people.map((person) => person.id)).toEqual([...peopleIds])
+  it("covers every invoice row across the five teams", () => {
+    const ledger = invoiceScreen()
+    expect(ledger.teams.reduce((sum, team) => sum + team.rows, 0)).toBe(8032)
+    expect(ledger.teams.reduce((sum, team) => sum + team.tokens, 0)).toBe(21270693)
+    expect(ledger.costCents).toBe(4109)
+    for (const team of ledger.teams) {
+      expect(team.costCents).toBe(Math.round(team.costUsd * 100))
+    }
   })
 })
 
 describe("investigate player", () => {
-  const actError = investigateSnapshots.findIndex(
-    (snapshot) => snapshot.step === "act" && snapshot.status === "error",
-  )
-  const actDone = investigateSnapshots.findIndex(
-    (snapshot) => snapshot.step === "act" && snapshot.status === "done",
-  )
-
-  it("emits the 503 snapshot and then the outbox snapshot", () => {
-    expect(actError).toBeGreaterThanOrEqual(0)
-    expect(actDone).toBeGreaterThan(actError)
-    const errorHtml = renderToStaticMarkup(
-      <InvestigateScreen snapshotIndex={actError} mode="investigate" />,
-    )
-    const doneHtml = renderToStaticMarkup(
-      <InvestigateScreen snapshotIndex={actDone} mode="investigate" />,
-    )
-    expect(errorHtml).toContain("Alert tool returned 503")
-    expect(errorHtml).toContain("act")
-    expect(doneHtml).toContain("Wrote outbox/alert.md")
-    expect(doneHtml).toContain("outbox/alert.md")
-    for (const step of ["plan", "ingest", "trace", "reconcile", "act", "verify"]) {
-      expect(errorHtml).toContain(step)
-    }
-  })
-
-  it("omits Priya and Sam and keeps Alex fixture amounts", () => {
-    const html = renderToStaticMarkup(
-      <InvestigateScreen snapshotIndex={actDone} mode="investigate" />,
-    )
-    expect(html).not.toContain("priya-shah")
-    expect(html).not.toContain("sam-ortiz")
-    expect(html).not.toContain("Priya Shah")
-    expect(html).not.toContain("Sam Ortiz")
-    expect(html).toContain("untracked-key")
-    expect(html).toContain("duplicate")
-    expect(html).toContain("retry")
-    expect(html).toContain("expensive-model")
-    expect(html).toContain("$19")
-    expect(html).toContain("$27")
-    expect(html).toContain("fixture")
-  })
-
-  it("uses mode fix locally and names the future run routes", () => {
-    const html = renderToStaticMarkup(
-      <InvestigateScreen snapshotIndex={0} mode="investigate" />,
-    )
+  it("starts idle and posts a real run", () => {
+    const html = renderToStaticMarkup(<InvestigateScreen snapshot={null} mode="investigate" />)
     expect(html).toContain("Run fix")
+    expect(html).toContain("Run investigate")
+    expect(html).toContain("mode:")
+    for (const step of ["plan", "ingest", "trace", "reconcile", "act", "verify"]) {
+      expect(html).toContain(step)
+    }
+    expect(html).not.toContain("Maya")
+    expect(html).not.toContain("Alex")
+    expect(html).not.toContain("$49")
     const source = readFileSync(new URL("../app/investigate/page.tsx", import.meta.url), "utf8")
-    expect(source).toContain("BACKEND: connect POST /api/runs here")
-    expect(source).toContain("BACKEND: connect GET /api/runs/:id here")
+    expect(source).toContain('fetch("/api/runs"')
+    expect(source).toContain("fetch(`/api/runs/${id}`)")
     expect(source).toContain('mode: "fix"')
-    expect(source).toContain("{ mode: \"fix\" }")
+    expect(source).toContain('{ mode: "fix" }')
   })
 })
 
@@ -157,7 +118,10 @@ describe("evidence slots", () => {
       expect(html).toContain(field)
     }
     expect(html.toLowerCase()).toContain("trace b minus trace a")
+    expect(html).toContain("3,671")
+    expect(html).toContain("1,448")
     expect(html).not.toContain("Alex")
     expect(html).not.toContain("$49")
+    expect(html.toLowerCase()).not.toContain("fixture")
   })
 })

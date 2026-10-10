@@ -54,3 +54,5 @@ Owner: dhirenderchoudhary
 2026-10-11 — Login posts to POST /api/auth. Env names for the LiteLLM key, neatlogs project, and cfo token are listed in .env.example. Values stay in .env.local. ~agent
 
 2026-10-11 — Five UI passes on the fixture screens: narrow tables scroll inside the page, a wrong password is an alert, ledger names stay underlined, the footer no longer clips, and a swipe hint shows when columns sit off-screen. ~agent
+
+2026-10-11 — Screens read ledger/invoices.csv (8,032 rows, five teams, 21,270,693 tokens, $41.09). The 14-day demo headline and fixture people are off the pages. Investigate posts to /api/runs. ~agent
