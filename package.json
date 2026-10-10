@@ -1,0 +1,30 @@
+{
+  "name": "spendline",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "ledger:generate": "node ledger/generate.ts 20260701",
+    "cfo:csv": "node evidence/cfo-input.ts",
+    "workload:before": "node --env-file-if-exists=.env.local workload/run.ts before",
+    "workload:fix": "node --env-file-if-exists=.env.local workload/run.ts after",
+    "workload:compare": "node --env-file-if-exists=.env.local workload/compare.ts"
+  },
+  "dependencies": {
+    "neatlogs": "^1.1.28",
+    "next": "^16.4.0",
+    "openai": "^7.32.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}

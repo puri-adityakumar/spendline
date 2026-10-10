@@ -1,0 +1,8 @@
+/node_modules
+/.next
+/.spendline
+/outbox/alert.md
+.env*
+!.env.example
+next-env.d.ts
+*.tsbuildinfo
