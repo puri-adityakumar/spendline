@@ -1,0 +1,26 @@
+{
+  "fixture": true,
+  "seed": 20260701,
+  "from": "2026-07-01T00:20:00Z",
+  "to": "2026-09-30T23:59:15Z",
+  "rows": 8032,
+  "teams": {
+    "Support": 3160,
+    "Backend": 1962,
+    "Growth": 1172,
+    "Data": 948,
+    "Ops": 790
+  },
+  "total_tokens": 21270693,
+  "total_cost_usd": 41.09,
+  "models": [
+    "gpt-6-luna",
+    "gpt-5.6-luna",
+    "gpt-5.6-terra",
+    "gpt-6.1-sol",
+    "gpt-5.6-sol",
+    "gpt-6-astra"
+  ],
+  "price_source": "https://developers.openai.com/api/docs/pricing",
+  "neatlogs_doc": "https://docs.neatlogs.com/sdk/http-injection"
+}

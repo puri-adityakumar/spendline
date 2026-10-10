@@ -32,3 +32,5 @@ Owner: dhirenderchoudhary
 ## Changesets
 
 2026-10-10 — Added docs/IDEA.md, docs/LOGS.md, and AGENTS.md from the project context. ~agent
+
+2026-10-10 — Added the 3-month, 5-team fixture ledger and neatlogs replay script. ~agent
