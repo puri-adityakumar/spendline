@@ -27,7 +27,7 @@ Owner: dhirenderchoudhary
 - [ ] Trace A
 - [ ] Trace B
 - [ ] Entire
-- [ ] cfo csv
+- [x] cfo csv
 
 ## Changesets
 
@@ -40,3 +40,5 @@ Owner: dhirenderchoudhary
 2026-10-11 — Hardened the backend: per-run poll queue, step errors become retryable snapshots, alert 503 is an errored TOOL span, state and outbox use tmp on Vercel, x-neatlogs-trace-id header. ~dhirender
 
 2026-10-11 — Agent ingest now reads invoices.csv too, added neatlogs traces get, route-level contract tests, and ledger README notes for people.csv. ~dhirender
+
+2026-10-11 — Added cfo.ai inputs: evidence/cfo-input.csv (leaky COGS from invoices.csv, other cells blank until supplied) and a bearer-token API with an OpenAPI spec at /api/cfo/openapi.json. ~dhirender

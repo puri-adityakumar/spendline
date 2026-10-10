@@ -1,0 +1,7 @@
+month,scenario,customers,price_usd,inference_cogs_usd,other_cost_usd,starting_cash_usd
+2026-07,leaky,,,13.7,,
+2026-07,capped,,,,,
+2026-08,leaky,,,13.58,,
+2026-08,capped,,,,,
+2026-09,leaky,,,13.81,,
+2026-09,capped,,,,,

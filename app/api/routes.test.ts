@@ -12,6 +12,9 @@ process.chdir(work);
 const auth = await import("./auth/route.ts");
 const runs = await import("./runs/route.ts");
 const run = await import("./runs/[id]/route.ts");
+const cfoUsage = await import("./cfo/usage/route.ts");
+const cfoScenarios = await import("./cfo/scenarios/route.ts");
+const cfoSpec = await import("./cfo/openapi.json/route.ts");
 
 const post = (body: unknown) => new Request("http://local/api", { method: "POST", body: JSON.stringify(body) });
 const poll = async (id: string) => (await run.GET(new Request("http://local/api"), { params: Promise.resolve({ id }) })).json();
@@ -61,4 +64,27 @@ test("overlapping polls advance one step each", async () => {
 test("bad mode is 400 and an unknown run is 404", async () => {
   assert.equal((await runs.POST(post({ mode: "other" }))).status, 400);
   assert.equal((await run.GET(new Request("http://local/api"), { params: Promise.resolve({ id: "missing" }) })).status, 404);
+});
+
+test("cfo data routes need the bearer token", async () => {
+  const token = randomUUID();
+  process.env.CFO_API_TOKEN = token;
+  const get = (route: typeof cfoUsage, auth?: string) =>
+    route.GET(new Request("http://local/api/cfo", { headers: auth ? { authorization: auth } : {} }));
+
+  assert.equal((await get(cfoUsage)).status, 401);
+  assert.equal((await get(cfoUsage, `Bearer ${token}x`)).status, 401);
+  const usage = await get(cfoUsage, `Bearer ${token}`);
+  assert.equal(usage.status, 200);
+  assert.equal((await usage.json()).data.length > 0, true);
+
+  const scenarios = await (await get(cfoScenarios, `Bearer ${token}`)).json();
+  assert.deepEqual([...new Set(scenarios.data.map((r: { scenario: string }) => r.scenario))], ["leaky", "capped"]);
+});
+
+test("cfo OpenAPI spec is public and points at the serving host", async () => {
+  const spec = await (await cfoSpec.GET(new Request("https://spendline.example/api/cfo/openapi.json"))).json();
+  assert.equal(spec.openapi, "3.1.0");
+  assert.deepEqual(spec.servers, [{ url: "https://spendline.example/api/cfo" }]);
+  assert.deepEqual(Object.keys(spec.paths), ["/usage", "/scenarios"]);
 });

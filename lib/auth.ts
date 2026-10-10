@@ -8,3 +8,9 @@ export function sessionFor(password: string, expected: string): string | null {
   if (!timingSafeEqual(digest(password), digest(expected))) return null;
   return createHmac("sha256", expected).update(SESSION_COOKIE).digest("hex");
 }
+
+export function bearerMatches(request: Request, expected: string): boolean {
+  const header = request.headers.get("authorization") ?? "";
+  const token = header.startsWith("Bearer ") ? header.slice(7) : "";
+  return timingSafeEqual(digest(token), digest(expected));
+}
