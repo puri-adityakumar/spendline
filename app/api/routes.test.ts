@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { test } from "node:test";
 
 const work = mkdtempSync(join(tmpdir(), "spendline-api-"));
-symlinkSync(join(process.cwd(), "ledger"), join(work, "ledger"));
+for (const dir of ["ledger", "workload"]) symlinkSync(join(process.cwd(), dir), join(work, dir));
 process.chdir(work);
 
 const auth = await import("./auth/route.ts");
@@ -31,7 +31,7 @@ test("POST /api/auth sets the session cookie for the right password and 401s oth
   assert.equal(typeof (await wrong.json()).error, "string");
 });
 
-for (const mode of ["investigate", "fix"]) {
+for (const mode of ["investigate"]) {
   test(`a ${mode} run polls through the contract with the 503 then the outbox`, async () => {
     const { id } = await (await runs.POST(post({ mode }))).json();
     assert.equal(typeof id, "string");
@@ -51,6 +51,19 @@ for (const mode of ["investigate", "fix"]) {
     assert.deepEqual(await poll(id), seen.at(-1));
   });
 }
+
+test("a fix run without a LiteLLM key reports it at act and retries", async () => {
+  const { id } = await (await runs.POST(post({ mode: "fix" }))).json();
+  const seen = [];
+  for (let i = 0; i < 6; i++) seen.push(await poll(id));
+  assert.deepEqual(
+    seen.slice(4).map((s) => ({ step: s.step, status: s.status, detail: s.detail })),
+    [
+      { step: "act", status: "error", detail: "act failed: LITELLM_API_KEY is not set" },
+      { step: "act", status: "error", detail: "act failed: LITELLM_API_KEY is not set" },
+    ],
+  );
+});
 
 test("overlapping polls advance one step each", async () => {
   const { id } = await (await runs.POST(post({ mode: "investigate" }))).json();

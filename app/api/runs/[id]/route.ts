@@ -1,6 +1,6 @@
 import { after } from "next/server.js";
 import { flush, trace } from "neatlogs";
-import { advance } from "../../../../lib/agent/loop.ts";
+import { advance, ownsRootTrace } from "../../../../lib/agent/loop.ts";
 import { loadRun, saveRun, snapshot, type RunSnapshot } from "../../../../lib/agent/state.ts";
 
 type Polled = { body: RunSnapshot; traceId: string | null } | null;
@@ -11,6 +11,11 @@ async function poll(id: string): Promise<Polled> {
   const run = loadRun(id);
   if (!run) return null;
   if (run.finished) return { body: snapshot(run), traceId: null };
+  if (ownsRootTrace(run)) {
+    const next = await advance(run);
+    saveRun(next);
+    return { body: snapshot(next), traceId: next.fixRun?.traceId ?? null };
+  }
   return trace(
     { name: "agent-step", kind: "WORKFLOW", sessionId: run.id, input: { mode: run.mode, stepIndex: run.stepIndex } },
     async (span) => {

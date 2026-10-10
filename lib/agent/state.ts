@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { Finding } from "../ledger/types.ts";
+import type { WorkloadRun } from "../workload.ts";
 import type { Step } from "./rules.ts";
 
 export type RunMode = "investigate" | "fix";
@@ -17,6 +18,7 @@ export type RunState = {
   findings: Finding[];
   outbox: string | null;
   alertAttempts: number;
+  fixRun: WorkloadRun | null;
   finished: boolean;
 };
 
