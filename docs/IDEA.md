@@ -149,17 +149,14 @@ Labels stay in `lib/agent/rules.ts`. `ledger/manifest.json` records which `key_i
 
 Phase 1 needs no API key and no shared phase 0 commit.
 
-Mock ingest for that start:
+Mock ingest committed in `ledger/`:
 
-- Five people: `maya-chen`, `jonah-patel`, `priya-shah`, `sam-ortiz`, `alex-kim`, with the tokens, billed, traced, and stories in Project.
-- Headline: 8.1M tokens, $237 billed, $188 traced, $49 unexplained.
-- `ledger/invoices.csv` — generated fixture, committed for the demo. The agent ingests this CSV.
-- `ledger/price-card.csv` — columns `model, input_usd_per_mtok, output_usd_per_mtok`. The agent ingests this CSV. Do not invent rates.
-- `lib/fixtures.ts` — field names match `GET /api/runs/:id`: `id`, `step`, `status`, `detail`, `findings`, `outbox`. Each finding uses `personId`, `badge`, `title`, `amountUsd`, `fixture`. The UI reads this module. Component props stay stable so the Phase 4 hook swap does not change them.
-
-The UI reads fixtures. The agent ingests the CSVs.
-
-`ledger/generate.ts` reads a seed it is given and does not contain a seed of its own. The generator run, the committed CSVs, and `key_id` wait until a human supplies the seed, the rates, and the real neatlogs project key. Do not invent them.
+- Three months, 2026-07-01 through 2026-09-30. Five teams: Support, Backend, Growth, Data, Ops. Seed `20260701` in `ledger/generate.py`. This fixture is not a real bill.
+- `ledger/invoices.csv` is what the agent ingests. Columns: `team`, `occurred_at`, `model`, `prompt_tokens`, `completion_tokens`, `total_tokens`, `cost_usd`.
+- `ledger/price-card.csv` columns: `model`, `input_usd_per_mtok`, `output_usd_per_mtok`. Rates are short-context prices from https://developers.openai.com/api/docs/pricing read on 2026-10-10. Models: `gpt-6-luna`, `gpt-5.6-luna`, `gpt-5.6-terra`, `gpt-6.1-sol`, `gpt-5.6-sol`, `gpt-6-astra`.
+- `ledger/traces.jsonl` is one neatlogs HTTP trace per invoice row. Shape: https://docs.neatlogs.com/sdk/http-injection. `ledger/replay_traces.py` posts them only when `NEATLOGS_WRITE_KEY` is set.
+- The five-person screen headline (8.1M tokens, $237 billed, $188 traced, $49 unexplained) is still the demo story in Project. It is not the sum of this ledger.
+- `lib/fixtures.ts` still matches `GET /api/runs/:id` for the screens. The UI reads that module. The agent ingests the CSVs.
 
 Do not invent an API key, a generator seed, an LLM provider, a `--shadow-*` string, an `ADMIN_PASSWORD`, a bad-row rule, a threshold, a price-card rate, a finding `title`, a model id, a retry count, golden classify labels, a person URL slug, a Vercel project name, a public trace URL, or a cfo.ai cell value.
 
