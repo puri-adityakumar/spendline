@@ -40,9 +40,16 @@ Failures and fixes:
 
 - Entire: logged in, enabled for Claude Code (`entire enable --agent claude-code --local`), graph plugin v0.4.0 installed, and `evidence/entire-graph.txt` committed. `entire checkpoint list` shows 0 checkpoints, because the agent hooks only fire in a session started after `enable`.
 
+- Trace A and trace B on the LiteLLM key, numbers from neatlogs (`evidence/compare.md`):
+  - Trace A `c1d34e8341c9d1a6291d1552cd2b9d4b`: `claude-opus-4.6`, 2 draft retries, 18 draft calls, 3671 tokens.
+  - Trace B `5e723ee0c57b481a316ee7546cc4a331`: `nova-lite`, no retries, 6 draft calls, 1448 tokens. Intent labels match trace A on 6 of 6 tickets.
+  - Trace B minus trace A: 2223 fewer tokens. neatlogs shows $0 cost for these model names, so the saving is in tokens.
+- The first fix used `nova-micro`. Its trace B `a9eea768f79e2e6acb5fbd2a6f6daea7` changed T-104 ("can't log in, reset email never arrives") from account to bug, so verification failed. A classify-only check showed `nova-lite`, `nova-2-lite` and `claude-haiku` all keep 6 of 6. The patch moved to `nova-lite`.
+- Hello trace `91c05234e2ff013f80cb6fe775fc4c2f`: one wrapped `nova-micro` call under `spendline-investigator`.
+- Failure: the first trace A run (`0f9b02d2d1762f1b7faee342da93c4e8`) reached neatlogs but crashed saving its result, because `evidence/runs/` did not exist. The script now creates it.
+
 Planned, not done:
 
-- Trace A and trace B with the real LiteLLM key.
 - An Entire checkpoint from a fresh agent session, with its `Entire-Checkpoint` trailer.
 - The cfo.ai business plan (pricing, costs, revenue, runway) as a shared Page.
 
@@ -64,4 +71,4 @@ Confirmed from neatlogs.com/hackathon on 2026-10-11:
 - Demo of 3 minutes or less covering neatlogs, Entire, and cfo.ai: architecture, implementation, runtime, reasoning, result.
 - Evidence: before and after runs with numbers, neatlogs trace links or screenshots, Entire checkpoints or graph output, a cfo.ai business plan, a recovery run, `#neatHack` posts, commits dated in the window.
 
-Outstanding: trace A/B, an Entire checkpoint, the cfo.ai plan, the demo video, `#neatHack` posts, and the quote post.
+Outstanding: an Entire checkpoint, the cfo.ai plan, the demo video, `#neatHack` posts, and the quote post.

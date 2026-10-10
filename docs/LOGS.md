@@ -23,9 +23,9 @@ Owner: dhirenderchoudhary
 - [x] Reconcile test
 - [x] Auth and poll
 - [x] Agent loop and 503
-- [ ] neatlogs hello
-- [ ] Trace A
-- [ ] Trace B
+- [x] neatlogs hello
+- [x] Trace A
+- [x] Trace B
 - [ ] Entire
 - [x] cfo csv
 
@@ -44,3 +44,5 @@ Owner: dhirenderchoudhary
 2026-10-11 — Added cfo.ai inputs: evidence/cfo-input.csv (leaky COGS from invoices.csv, other cells blank until supplied) and a bearer-token API with an OpenAPI spec at /api/cfo/openapi.json. ~dhirender
 
 2026-10-11 — Added the trace A/B workload on the hackathon LiteLLM key (classify + draft, one fix patch, compare.md from neatlogs), wired "Run fix" to rerun it as trace B, and added hackathon.md and evidence/README.md. ~dhirender
+
+2026-10-11 — Ran trace A (claude-opus-4.6, 2 retries, 3671 tokens) and trace B (nova-lite, 0 retries, 1448 tokens) on the LiteLLM key. A first trace B on nova-micro changed one intent label and was rejected. Hello trace sent. ~dhirender
