@@ -1,4 +1,4 @@
-import { after } from "next/server";
+import { after } from "next/server.js";
 import { flush, trace } from "neatlogs";
 import { advance } from "../../../../lib/agent/loop.ts";
 import { loadRun, saveRun, snapshot, type RunSnapshot } from "../../../../lib/agent/state.ts";

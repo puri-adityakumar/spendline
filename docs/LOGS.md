@@ -38,3 +38,5 @@ Owner: dhirenderchoudhary
 2026-10-11 — Added the backend: person ledger generator, reconcile with tests, agent step loop with 503 recovery, auth and run routes, and neatlogs init with per-step WORKFLOW traces. ~dhirender
 
 2026-10-11 — Hardened the backend: per-run poll queue, step errors become retryable snapshots, alert 503 is an errored TOOL span, state and outbox use tmp on Vercel, x-neatlogs-trace-id header. ~dhirender
+
+2026-10-11 — Agent ingest now reads invoices.csv too, added neatlogs traces get, route-level contract tests, and ledger README notes for people.csv. ~dhirender

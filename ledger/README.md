@@ -10,6 +10,16 @@ This is not a real bill. The rows are a seeded fixture for Spendline.
 - `generate.py` rebuilds those files. Seed `20260701`. Range 2026-07-01 through 2026-09-30. Teams: Support, Backend, Growth, Data, Ops.
 - `replay_traces.py` posts the JSONL only when `NEATLOGS_WRITE_KEY` is set. With no key it prints a line and exits without sending.
 
+## Five-person story
+
+The screens and the reconcile step use a second, smaller fixture for the five-person demo team. It is separate from the 3-month team ledger above.
+
+- `people.csv` has 14 days (2026-09-17 through 2026-09-30) for `maya-chen`, `jonah-patel`, `priya-shah`, `sam-ortiz`, and `alex-kim`. Columns: `request_id`, `person_id`, `day`, `operation`, `model`, `key_id`, `attempt`, `tokens`, `billed_usd`, `traced_usd`.
+- `manifest.json` records `liveNeatlogsKeyId`, the key whose calls neatlogs traces. Rows on any other key are untracked.
+- `generate.ts` rebuilds both files from a seed: `npm run ledger:generate` (seed `20260701`). Totals are 8.1M tokens, $237 billed, $188 traced.
+
+The agent ingests `invoices.csv` and `people.csv`. Reconcile reads `people.csv`. A repeated `request_id` is a duplicate line, `attempt` above 1 is a retry, and the price card's highest output rate is the expensive model.
+
 ## Prices
 
 Short-context USD per 1M tokens, read from the OpenAI pricing page on 2026-10-10:
