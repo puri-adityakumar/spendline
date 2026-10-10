@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest"
 
 import HomePage from "../app/page"
 import EvidencePage from "../app/evidence/page"
-import { LoginScreen } from "../app/login/page"
+import { LoginScreen } from "../app/login/login-screen"
 import { PersonScreen } from "../app/team/[person]/page"
 import { InvestigateScreen } from "../app/investigate/page"
 import { invoiceScreen } from "../lib/ledger/screen"
@@ -55,10 +55,13 @@ describe("login", () => {
     expect(html).toContain('name="password"')
     expect(html).toContain('method="post"')
     expect(html).toContain('action="/api/auth/form"')
-    const source = readFileSync(new URL("../app/login/page.tsx", import.meta.url), "utf8")
+    const source = readFileSync(new URL("../app/login/login-screen.tsx", import.meta.url), "utf8")
     expect(source).toContain('fetch("/api/auth"')
     expect(source).toContain("JSON.stringify(body)")
     expect(source).toContain("password")
+    const failed = renderToStaticMarkup(<LoginScreen initialError="Wrong password" />)
+    expect(failed).toContain('role="alert"')
+    expect(failed).toContain("Wrong password")
   })
 })
 
