@@ -5,20 +5,30 @@ import { useState, type FormEvent } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
-function postPassword(password: string) {
+async function postPassword(password: string) {
   const body = { password }
-  // BACKEND: connect POST /api/auth here
-  return body
+  // POST /api/auth sets the httpOnly session cookie.
+  return fetch("/api/auth", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  })
 }
 
 export function LoginScreen() {
   const [password, setPassword] = useState("")
-  const [note, setNote] = useState("Pages render without a cookie until auth is connected.")
+  const [note, setNote] = useState("One shared password. A wrong password stays on this form.")
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const body = postPassword(password)
-    setNote(`Held locally as { password }. ${body.password.length} characters. No request was sent.`)
+    setNote("Checking the password.")
+    const response = await postPassword(password)
+    if (response.status === 204) {
+      window.location.assign("/")
+      return
+    }
+    const payload = (await response.json().catch(() => null)) as { error?: string } | null
+    setNote(payload?.error ?? "Wrong password")
   }
 
   return (

@@ -50,3 +50,5 @@ Owner: dhirenderchoudhary
 2026-10-11 — Ran trace A (claude-opus-4.6, 2 retries, 3671 tokens) and trace B (nova-lite, 0 retries, 1448 tokens) on the LiteLLM key. A first trace B on nova-micro changed one intent label and was rejected. Hello trace sent. ~dhirender
 
 2026-10-11 — Enabled Entire for the repo with commit linking always and Cursor agent hooks. ~agent
+
+2026-10-11 — Login posts to POST /api/auth. Env names for the LiteLLM key, neatlogs project, and cfo token are listed in .env.example. Values stay in .env.local. ~agent
