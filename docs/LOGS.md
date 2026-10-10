@@ -26,7 +26,7 @@ Owner: dhirenderchoudhary
 - [x] neatlogs hello
 - [x] Trace A
 - [x] Trace B
-- [ ] Entire
+- [x] Entire
 - [x] cfo csv
 
 ## Changesets
@@ -46,3 +46,5 @@ Owner: dhirenderchoudhary
 2026-10-11 — Added the trace A/B workload on the hackathon LiteLLM key (classify + draft, one fix patch, compare.md from neatlogs), wired "Run fix" to rerun it as trace B, and added hackathon.md and evidence/README.md. ~dhirender
 
 2026-10-11 — Ran trace A (claude-opus-4.6, 2 retries, 3671 tokens) and trace B (nova-lite, 0 retries, 1448 tokens) on the LiteLLM key. A first trace B on nova-micro changed one intent label and was rejected. Hello trace sent. ~dhirender
+
+2026-10-11 — Enabled Entire for the repo with commit linking always and Cursor agent hooks. ~agent
