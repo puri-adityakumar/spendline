@@ -1,0 +1,26 @@
+Index: cache-hit (53ms) | Query: 0ms | Total: 53ms
+Impact: advance (lib/agent/loop.ts:127) def=127 span=127-139 [function]
+Blast radius: 4 callers (3 direct, 1 transitive), 3 callees, 3 type consumers, 3 data flows, 3 co-change files, 0 siblings.
+Callers (3 direct, 1 transitive; who breaks if behavior changes):
+- poll (app/api/runs/[id]/route.ts:10) [ASYNC_CALLS]
+- loop.test.ts (lib/agent/loop.test.ts)
+- drain (lib/agent/loop.test.ts:33) [ASYNC_CALLS]
+- enqueue (app/api/runs/[id]/route.ts:30, def :29) [via poll]
+Callees (3; what it depends on):
+- defaultEnv (lib/agent/loop.ts:16)
+- runStep (lib/agent/loop.ts:118) [ASYNC_CALLS]
+- runStep (lib/agent/loop.ts:118)
+Type consumers (0 in, 3 out; USES_TYPE/PARAM_TYPE/RETURNS_TYPE):
+- -> RunState (lib/agent/state.ts:11) [PARAM_TYPE]
+- -> RunState (lib/agent/state.ts:11) [RETURNS_TYPE]
+- -> RunState (lib/agent/state.ts:11) [USES_TYPE]
+Data flows (2 in, 1 out):
+- <- drain (lib/agent/loop.test.ts:33)
+- <- defaultEnv (lib/agent/loop.ts:16)
+- -> runStep (lib/agent/loop.ts:118)
+Co-change coupling (3; files that historically change with lib/agent/loop.ts):
+- lib/agent/loop.test.ts [files changed together in 2 recent commits]
+- lib/agent/state.ts [files changed together in 2 recent commits]
+- lib/tools/neatlogs.ts [files changed together in 2 recent commits]
+Same-container siblings (0):
+- none
