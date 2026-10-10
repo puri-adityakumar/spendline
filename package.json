@@ -1,0 +1,22 @@
+{
+  "name": "spendline",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "ledger:generate": "node ledger/generate.ts 20260701"
+  },
+  "dependencies": {
+    "neatlogs": "^1.1.28",
+    "next": "^16.4.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}
