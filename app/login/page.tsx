@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type FormEvent } from "react"
+import { useEffect, useState, type FormEvent } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -19,6 +19,16 @@ export function LoginScreen() {
   const [password, setPassword] = useState("")
   const [note, setNote] = useState("One shared password. A wrong password stays on this form.")
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    // A click before hydration used to GET the password into the query string.
+    if (!params.has("password") && params.get("error") !== "1") return
+    setError("Wrong password")
+    params.delete("password")
+    params.set("error", "1")
+    window.history.replaceState(null, "", `/login?${params.toString()}`)
+  }, [])
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -39,7 +49,7 @@ export function LoginScreen() {
       <Card className="w-full max-w-sm">
         <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
         <p className="mt-1 text-sm text-muted-foreground">One shared password. No user table.</p>
-        <form className="mt-5 space-y-3" onSubmit={onSubmit}>
+        <form method="post" action="/api/auth/form" className="mt-5 space-y-3" onSubmit={onSubmit}>
           <label className="block text-xs text-muted-foreground" htmlFor="password">
             Password
           </label>

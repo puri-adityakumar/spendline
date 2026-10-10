@@ -53,6 +53,8 @@ describe("login", () => {
     const html = renderToStaticMarkup(<LoginScreen />)
     expect(html.match(/type="password"/g)).toHaveLength(1)
     expect(html).toContain('name="password"')
+    expect(html).toContain('method="post"')
+    expect(html).toContain('action="/api/auth/form"')
     const source = readFileSync(new URL("../app/login/page.tsx", import.meta.url), "utf8")
     expect(source).toContain('fetch("/api/auth"')
     expect(source).toContain("JSON.stringify(body)")
