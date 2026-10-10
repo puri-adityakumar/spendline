@@ -42,3 +42,5 @@ Owner: dhirenderchoudhary
 2026-10-11 — Agent ingest now reads invoices.csv too, added neatlogs traces get, route-level contract tests, and ledger README notes for people.csv. ~dhirender
 
 2026-10-11 — Added cfo.ai inputs: evidence/cfo-input.csv (leaky COGS from invoices.csv, other cells blank until supplied) and a bearer-token API with an OpenAPI spec at /api/cfo/openapi.json. ~dhirender
+
+2026-10-11 — Added the trace A/B workload on the hackathon LiteLLM key (classify + draft, one fix patch, compare.md from neatlogs), wired "Run fix" to rerun it as trace B, and added hackathon.md and evidence/README.md. ~dhirender
