@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { flush, init, shutdown } from "neatlogs";
 import { applyFix, labelAgreement, readConfig, writeConfig } from "../lib/tools/workload.ts";
@@ -29,6 +29,7 @@ if (tag === "after") {
 await init({ workflowName: "spendline-investigator", endpoint: "https://ingest.neatlogs.com", tags: [tag] });
 try {
   const run = await runWorkload(tag, config, litellmChat(), TICKETS);
+  mkdirSync(`${root}evidence/runs`, { recursive: true });
   writeFileSync(runPath(tag), `${JSON.stringify(run, null, 2)}\n`);
   console.log(`Trace ${tag === "before" ? "A" : "B"} (${tag}): ${run.traceId}`);
   console.log(`classify_model=${config.classify_model} max_retries=${config.max_retries} draft calls=${run.draftCalls}`);

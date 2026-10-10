@@ -105,7 +105,7 @@ test("fix mode reruns the patched workload as trace B and verifies labels agains
     ["plan:done", "ingest:done", "trace:done", "reconcile:done", "act:done", "verify:done"],
   );
   const final = seen.at(-1)!;
-  assert.deepEqual(final.fixRun!.config, { classify_model: "nova-micro", max_retries: 0 });
+  assert.deepEqual(final.fixRun!.config, { classify_model: "nova-lite", max_retries: 0 });
   assert.equal(final.fixRun!.draftCalls, 6);
   assert.equal(final.detail, `Intent labels match trace A (${before.traceId}) on 6 of 6 tickets`);
 });

@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import type { WorkloadConfig } from "../workload.ts";
 
-export const FIX_PATCH: Partial<WorkloadConfig> = { classify_model: "nova-micro", max_retries: 0 };
+export const FIX_PATCH: Partial<WorkloadConfig> = { classify_model: "nova-lite", max_retries: 0 };
 
 export function applyFix(config: WorkloadConfig): WorkloadConfig {
   return { ...config, ...FIX_PATCH };
