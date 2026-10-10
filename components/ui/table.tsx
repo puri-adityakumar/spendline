@@ -4,8 +4,11 @@ import { cn } from "@/lib/utils"
 
 export function Table({ className, ...props }: ComponentProps<"table">) {
   return (
-    <div className="relative w-full overflow-auto rounded-lg border">
-      <table className={cn("w-full caption-bottom text-sm", className)} {...props} />
+    <div className="grid min-w-0 gap-1">
+      <p className="text-xs text-muted-foreground sm:hidden">Swipe sideways to see every column.</p>
+      <div className="relative w-full max-w-full overflow-x-auto rounded-lg border">
+        <table className={cn("w-full min-w-[40rem] caption-bottom text-sm", className)} {...props} />
+      </div>
     </div>
   )
 }

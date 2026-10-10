@@ -36,7 +36,7 @@ export function InvestigateScreen({
   const stepIndex = runSteps.indexOf(snapshot.step)
 
   return (
-    <main className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[14rem_1fr]">
+    <main className="mx-auto grid w-full min-w-0 max-w-6xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[14rem_1fr]">
       <ol className="space-y-3">
         {runSteps.map((step, index) => {
           const done = index < stepIndex || (index === stepIndex && snapshot.status === "done")
@@ -62,7 +62,7 @@ export function InvestigateScreen({
           )
         })}
       </ol>
-      <div className="space-y-4">
+      <div className="min-w-0 space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Investigate</h1>

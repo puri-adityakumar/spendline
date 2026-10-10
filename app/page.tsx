@@ -7,7 +7,7 @@ import { headline, people, usd } from "@/lib/fixtures"
 
 export default function HomePage() {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">14-day team ledger</h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
@@ -39,7 +39,7 @@ export default function HomePage() {
             {people.map((person) => (
               <tr key={person.id} className="border-t">
                 <td className="px-3 py-2">
-                  <a href={`/team/${person.id}`} className="font-medium underline-offset-4 hover:underline">
+                  <a href={`/team/${person.id}`} className="font-medium underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground">
                     {person.name}
                   </a>
                 </td>

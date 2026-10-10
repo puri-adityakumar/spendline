@@ -17,7 +17,7 @@ export function PersonScreen({ personId }: { personId: string }) {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
+    <main className="mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-xs text-muted-foreground">{person.role}</p>
@@ -58,8 +58,8 @@ export function PersonScreen({ personId }: { personId: string }) {
           {person.rows.map((row, index) => (
             <TableRow key={`${row.day}-${row.key}-${index}`}>
               <TableCell className="tabular-nums">{row.day}</TableCell>
-              <TableCell className="font-mono text-xs">{row.model}</TableCell>
-              <TableCell className="font-mono text-xs">{row.key}</TableCell>
+              <TableCell className="whitespace-nowrap font-mono text-xs">{row.model}</TableCell>
+              <TableCell className="whitespace-nowrap font-mono text-xs">{row.key}</TableCell>
               <TableCell className="tabular-nums">{row.tokens}</TableCell>
               <TableCell className="tabular-nums">{usd(row.billedUsd)}</TableCell>
               <TableCell className="tabular-nums">{usd(row.tracedUsd)}</TableCell>

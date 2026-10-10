@@ -33,11 +33,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning className={`${manrope.variable} ${geistMono.variable} ${museo.variable}`}>
       <body className="min-h-dvh bg-background font-sans text-foreground antialiased">
         <Providers>
-          <div className="flex min-h-dvh flex-col bg-background">
+          <div className="flex min-h-dvh min-w-0 flex-col bg-background">
             <SiteHeader />
-            <div className="flex-1">{children}</div>
+            <div className="min-w-0 flex-1">{children}</div>
             <footer className="border-t px-4 py-4 text-xs text-muted-foreground sm:px-6">
-              <div className="mx-auto flex max-w-6xl items-center justify-between">
+              <div className="mx-auto flex min-w-0 max-w-6xl flex-wrap items-center justify-between gap-2">
                 <span>Team token ledger</span>
                 <span>Fixture screens</span>
               </div>

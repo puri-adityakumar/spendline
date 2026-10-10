@@ -52,3 +52,5 @@ Owner: dhirenderchoudhary
 2026-10-11 — Enabled Entire for the repo with commit linking always and Cursor agent hooks. ~agent
 
 2026-10-11 — Login posts to POST /api/auth. Env names for the LiteLLM key, neatlogs project, and cfo token are listed in .env.example. Values stay in .env.local. ~agent
+
+2026-10-11 — Five UI passes on the fixture screens: narrow tables scroll inside the page, a wrong password is an alert, ledger names stay underlined, the footer no longer clips, and a swipe hint shows when columns sit off-screen. ~agent

@@ -18,9 +18,11 @@ async function postPassword(password: string) {
 export function LoginScreen() {
   const [password, setPassword] = useState("")
   const [note, setNote] = useState("One shared password. A wrong password stays on this form.")
+  const [error, setError] = useState<string | null>(null)
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setError(null)
     setNote("Checking the password.")
     const response = await postPassword(password)
     if (response.status === 204) {
@@ -28,7 +30,8 @@ export function LoginScreen() {
       return
     }
     const payload = (await response.json().catch(() => null)) as { error?: string } | null
-    setNote(payload?.error ?? "Wrong password")
+    setNote("One shared password. A wrong password stays on this form.")
+    setError(payload?.error ?? "Wrong password")
   }
 
   return (
@@ -47,13 +50,20 @@ export function LoginScreen() {
             autoComplete="current-password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-invalid={error ? true : undefined}
+            className="h-9 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring aria-invalid:border-destructive"
           />
           <Button type="submit" className="w-full">
             Continue
           </Button>
         </form>
-        <p className="mt-3 text-xs text-muted-foreground">{note}</p>
+        {error ? (
+          <p className="mt-3 text-sm text-destructive" role="alert">
+            {error}
+          </p>
+        ) : (
+          <p className="mt-3 text-xs text-muted-foreground">{note}</p>
+        )}
       </Card>
     </main>
   )
