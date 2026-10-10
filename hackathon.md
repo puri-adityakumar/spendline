@@ -17,7 +17,7 @@ Typobros: Aditya Kumar Puri (screens) and dhirenderchoudhary (backend and agent)
 - neatlogs TypeScript SDK 1.1.28. Workflow `spendline-investigator`. Every poll is a WORKFLOW trace, tools are TOOL spans, model calls go through `wrapOpenAI`.
 - LiteLLM hackathon key (OpenAI-compatible) for the workload: `claude-opus-4.6`, `claude-haiku`, `nova-micro`.
 - cfo.ai: `evidence/cfo-input.csv` and a bearer-token API with an OpenAPI spec at `/api/cfo/openapi.json`.
-- Entire: not set up yet.
+- Entire CLI 0.11.4 with the graph plugin, enabled for Claude Code with local settings. `evidence/entire-graph.txt` is `entire graph impact --repo . --symbol advance`.
 
 ## Build log
 
@@ -38,10 +38,12 @@ Failures and fixes:
 - `npm run` puts the SDK's own `neatlogs` binary ahead of `neatlogs-cli` on PATH. The compare script strips `node_modules/.bin` before calling the CLI.
 - Rounding each usage group to cents drifted the cfo.ai total by $0.02. Usage rows keep invoice precision now.
 
+- Entire: logged in, enabled for Claude Code (`entire enable --agent claude-code --local`), graph plugin v0.4.0 installed, and `evidence/entire-graph.txt` committed. `entire checkpoint list` shows 0 checkpoints, because the agent hooks only fire in a session started after `enable`.
+
 Planned, not done:
 
 - Trace A and trace B with the real LiteLLM key.
-- Entire checkpoints and `evidence/entire-graph.txt`.
+- An Entire checkpoint from a fresh agent session, with its `Entire-Checkpoint` trailer.
 - The cfo.ai business plan (pricing, costs, revenue, runway) as a shared Page.
 
 ## Demo
@@ -62,4 +64,4 @@ Confirmed from neatlogs.com/hackathon on 2026-10-11:
 - Demo of 3 minutes or less covering neatlogs, Entire, and cfo.ai: architecture, implementation, runtime, reasoning, result.
 - Evidence: before and after runs with numbers, neatlogs trace links or screenshots, Entire checkpoints or graph output, a cfo.ai business plan, a recovery run, `#neatHack` posts, commits dated in the window.
 
-Outstanding: trace A/B, Entire, the cfo.ai plan, the demo video, `#neatHack` posts, and the quote post.
+Outstanding: trace A/B, an Entire checkpoint, the cfo.ai plan, the demo video, `#neatHack` posts, and the quote post.
