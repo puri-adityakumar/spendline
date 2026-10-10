@@ -10,11 +10,15 @@
     "build": "next build",
     "start": "next start",
     "ledger:generate": "node ledger/generate.ts 20260701",
-    "cfo:csv": "node evidence/cfo-input.ts"
+    "cfo:csv": "node evidence/cfo-input.ts",
+    "workload:before": "node workload/run.ts before",
+    "workload:fix": "node workload/run.ts after",
+    "workload:compare": "node workload/compare.ts"
   },
   "dependencies": {
     "neatlogs": "^1.1.28",
     "next": "^16.4.0",
+    "openai": "^7.32.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
