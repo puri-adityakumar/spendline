@@ -1,0 +1,17 @@
+{
+  "tag": "before",
+  "traceId": "c1d34e8341c9d1a6291d1552cd2b9d4b",
+  "config": {
+    "classify_model": "claude-opus-4.6",
+    "max_retries": 2
+  },
+  "labels": {
+    "T-101": "billing",
+    "T-102": "bug",
+    "T-103": "how-to",
+    "T-104": "account",
+    "T-105": "billing",
+    "T-106": "bug"
+  },
+  "draftCalls": 18
+}

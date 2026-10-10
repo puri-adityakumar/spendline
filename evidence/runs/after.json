@@ -1,0 +1,17 @@
+{
+  "tag": "after",
+  "traceId": "5e723ee0c57b481a316ee7546cc4a331",
+  "config": {
+    "classify_model": "nova-lite",
+    "max_retries": 0
+  },
+  "labels": {
+    "T-101": "billing",
+    "T-102": "bug",
+    "T-103": "how-to",
+    "T-104": "account",
+    "T-105": "billing",
+    "T-106": "bug"
+  },
+  "draftCalls": 6
+}

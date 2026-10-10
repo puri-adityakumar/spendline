@@ -1,6 +1,10 @@
-node_modules
-.next
-out
+/node_modules
+/.next
+/.spendline
+/outbox/alert.md
+/out
 *.log
-.env
-.env.local
+.env*
+!.env.example
+next-env.d.ts
+*.tsbuildinfo

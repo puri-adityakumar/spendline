@@ -107,11 +107,11 @@ CSV columns: `month, scenario, customers, price_usd, inference_cogs_usd, other_c
 
 ### Wrapped inference key
 
-Wrap whichever client is called so neatlogs sees tokens and model. The provider is undecided. No keys are in the repo.
+Wrap whichever client is called so neatlogs sees tokens and model. No keys are in the repo.
 
-- Amazon Bedrock only if hackathon credits are actually on the account (`wrapBedrock`).
-- Otherwise one OpenRouter or Anthropic inference key (`wrapOpenRouterAgent` or `wrapAnthropic`).
-- Env names only: `OPENROUTER_API_KEY` or `ANTHROPIC_API_KEY`. That key is an inference key, not a billing integration.
+- Resolved from [neatlogs.com/hackathon/models](https://neatlogs.com/hackathon/models): the hackathon LiteLLM key. It is OpenAI-compatible at `https://litellm.vision.aivar.app/v1`, so the client is `wrapOpenAI`. Models: `nova-micro`, `nova-lite`, `nova-pro`, `nova-2-lite`, `claude-haiku`, `claude-sonnet-4.6`, `claude-opus-4.6`. One $20 budget per team over 30 days.
+- Bedrock is not on the hackathon AWS accounts, per the same page.
+- Env name only: `LITELLM_API_KEY`. That key is an inference key, not a billing integration.
 
 ## Project structure
 
@@ -160,7 +160,7 @@ Mock ingest committed in `ledger/`:
 
 Do not invent an API key, a generator seed, an LLM provider, a `--shadow-*` string, an `ADMIN_PASSWORD`, a bad-row rule, a threshold, a price-card rate, a finding `title`, a model id, a retry count, golden classify labels, a person URL slug, a Vercel project name, a public trace URL, or a cfo.ai cell value.
 
-`.env.example` lists names only, and only after Aditya says who may add that file. Never commit a secret. Names already fixed, with no values: `ADMIN_PASSWORD`, `NEATLOGS_API_KEY`, `NEATLOGS_TOKEN`, `NEATLOGS_PROJECT_ID`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`.
+`.env.example` lists names only, and only after Aditya says who may add that file. Never commit a secret. Names already fixed, with no values: `ADMIN_PASSWORD`, `NEATLOGS_API_KEY`, `NEATLOGS_TOKEN`, `NEATLOGS_PROJECT_ID`, `LITELLM_API_KEY`, `CFO_API_TOKEN`.
 
 Later slices that need a human, named on the phase that owns them: neatlogs signup and device login, Entire device login, who may commit `.entire/settings.json` and `.cursor/hooks.json`, the inference key and `classify_model` / `max_retries`, Conflict 3 before trace B, the 15-minute cfo.ai attempt, who may merge onto `main`, and who may edit root `README.md`.
 

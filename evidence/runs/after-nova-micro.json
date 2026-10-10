@@ -1,0 +1,17 @@
+{
+  "tag": "after",
+  "traceId": "a9eea768f79e2e6acb5fbd2a6f6daea7",
+  "config": {
+    "classify_model": "nova-micro",
+    "max_retries": 0
+  },
+  "labels": {
+    "T-101": "billing",
+    "T-102": "bug",
+    "T-103": "how-to",
+    "T-104": "bug",
+    "T-105": "billing",
+    "T-106": "bug"
+  },
+  "draftCalls": 6
+}
