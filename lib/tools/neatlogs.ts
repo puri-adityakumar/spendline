@@ -1,6 +1,6 @@
 import { span } from "neatlogs";
 
-const COST_URL = "https://app.neatlogs.com/api/v1/public/analytics/cost";
+const API = "https://app.neatlogs.com/api/v1/public";
 
 export type CostRow = { group: string; traceCount: number; totalCostUsd: number; totalTokens: number };
 
@@ -10,7 +10,7 @@ export const costRollup = span(
     const token = process.env.NEATLOGS_TOKEN;
     const projectId = process.env.NEATLOGS_PROJECT_ID;
     if (!token || !projectId) return null;
-    const res = await fetch(COST_URL, {
+    const res = await fetch(`${API}/analytics/cost`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}`, "x-project-id": projectId, "Content-Type": "application/json" },
       body: JSON.stringify({ from, to, filters: { workflowNames: ["spendline-investigator"] } }),
@@ -18,5 +18,28 @@ export const costRollup = span(
     if (!res.ok) throw new Error(`neatlogs cost API returned ${res.status}`);
     const body = (await res.json()) as { data: { rows: CostRow[] } };
     return body.data.rows;
+  },
+);
+
+export type TraceSummary = {
+  traceId: string;
+  status: string;
+  workflowName: string | null;
+  spansCount: number;
+  totalTokens: number;
+  totalCostUsd: number;
+};
+
+export const getTrace = span(
+  { kind: "TOOL", toolName: "neatlogs-trace", name: "neatlogs-trace" },
+  async (traceId: string): Promise<TraceSummary | null> => {
+    const token = process.env.NEATLOGS_TOKEN;
+    const projectId = process.env.NEATLOGS_PROJECT_ID;
+    if (!token || !projectId) return null;
+    const res = await fetch(`${API}/traces/${encodeURIComponent(traceId)}`, {
+      headers: { Authorization: `Bearer ${token}`, "x-project-id": projectId },
+    });
+    if (!res.ok) throw new Error(`neatlogs trace API returned ${res.status}`);
+    return ((await res.json()) as { data: TraceSummary }).data;
   },
 );

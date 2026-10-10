@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { loadLedger } from "../ledger/load.ts";
+import { loadInvoices, loadLedger } from "../ledger/load.ts";
 import { reconcile } from "../ledger/reconcile.ts";
 import { AlertUnavailable, sendAlert } from "../tools/alert.ts";
 import { costRollup } from "../tools/neatlogs.ts";
@@ -25,8 +25,14 @@ const HANDLERS: Record<Step, StepHandler> = {
         : "Plan: ingest, trace, reconcile, act, verify.",
   }),
   ingest: async (_state, dirs) => {
+    const invoices = loadInvoices(dirs.ledger);
     const { rows } = loadLedger(dirs.ledger);
-    return { status: "done", detail: `Loaded ${rows.length} ledger rows for ${new Set(rows.map((r) => r.personId)).size} people` };
+    const teams = new Set(invoices.map((r) => r.team)).size;
+    const people = new Set(rows.map((r) => r.personId)).size;
+    return {
+      status: "done",
+      detail: `Loaded ${invoices.length} invoice rows for ${teams} teams and ${rows.length} ledger rows for ${people} people`,
+    };
   },
   trace: async () => {
     const to = new Date();

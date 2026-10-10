@@ -2,6 +2,16 @@ export type PersonId = "maya-chen" | "jonah-patel" | "priya-shah" | "sam-ortiz" 
 
 export type Badge = "retry" | "expensive-model" | "untracked-key" | "duplicate";
 
+export type InvoiceRow = {
+  team: string;
+  occurredAt: string;
+  model: string;
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+  costUsd: number;
+};
+
 export type LedgerRow = {
   requestId: string;
   personId: PersonId;

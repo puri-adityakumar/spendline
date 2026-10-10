@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Ledger, LedgerRow, Manifest, PersonId, PriceCardRow } from "./types.ts";
+import type { InvoiceRow, Ledger, LedgerRow, Manifest, PersonId, PriceCardRow } from "./types.ts";
 
 const PEOPLE: readonly PersonId[] = ["maya-chen", "jonah-patel", "priya-shah", "sam-ortiz", "alex-kim"];
 
@@ -51,4 +51,19 @@ export function loadLedger(dir = join(process.cwd(), "ledger")): Ledger {
 
   const manifest = JSON.parse(readFileSync(join(dir, "manifest.json"), "utf8")) as Manifest;
   return { rows, priceCard, manifest };
+}
+
+export function loadInvoices(dir = join(process.cwd(), "ledger")): InvoiceRow[] {
+  return parseCsv(
+    readFileSync(join(dir, "invoices.csv"), "utf8"),
+    "team,occurred_at,model,prompt_tokens,completion_tokens,total_tokens,cost_usd",
+  ).map(([team, occurredAt, model, prompt, completion, total, cost]) => ({
+    team,
+    occurredAt,
+    model,
+    promptTokens: Number(prompt),
+    completionTokens: Number(completion),
+    totalTokens: Number(total),
+    costUsd: Number(cost),
+  }));
 }
