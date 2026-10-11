@@ -4,7 +4,7 @@ This is not a real bill. The rows are a seeded fixture for Spendline.
 
 ## What is here
 
-- `invoices.csv` is what the agent ingests. Columns: `team`, `occurred_at`, `model`, `prompt_tokens`, `completion_tokens`, `total_tokens`, `cost_usd`.
+- `invoices.csv` is what the screens and the agent ingest. Columns: `team`, `occurred_at`, `model`, `prompt_tokens`, `completion_tokens`, `total_tokens`, `cost_usd`.
 - `price-card.csv` columns: `model`, `input_usd_per_mtok`, `output_usd_per_mtok`.
 - `traces.jsonl` is one neatlogs HTTP trace per invoice row.
 - `generate.py` rebuilds those files. Seed `20260701`. Range 2026-07-01 through 2026-09-30. Teams: Support, Backend, Growth, Data, Ops.
@@ -12,7 +12,7 @@ This is not a real bill. The rows are a seeded fixture for Spendline.
 
 ## Five-person story
 
-The screens and the reconcile step use a second, smaller fixture for the five-person demo team. It is separate from the 3-month team ledger above.
+Reconcile still uses a second, smaller file for the five-person demo team. The screens do not. It is separate from the 3-month team ledger above.
 
 - `people.csv` has 14 days (2026-09-17 through 2026-09-30) for `maya-chen`, `jonah-patel`, `priya-shah`, `sam-ortiz`, and `alex-kim`. Columns: `request_id`, `person_id`, `day`, `operation`, `model`, `key_id`, `attempt`, `tokens`, `billed_usd`, `traced_usd`.
 - `manifest.json` records `liveNeatlogsKeyId`, the key whose calls neatlogs traces. Rows on any other key are untracked.

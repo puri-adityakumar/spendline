@@ -6,12 +6,12 @@ Aditya signs ~aditya, dhirenderchoudhary signs ~dhirender, the cloud agent signs
 
 Owner: Aditya
 
-- [ ] Shell and tokens
-- [ ] Login
-- [ ] Dashboard
-- [ ] Person page
-- [ ] Investigate player
-- [ ] Evidence slots
+- [x] Shell and tokens
+- [x] Login
+- [x] Dashboard
+- [x] Person page
+- [x] Investigate player
+- [x] Evidence slots
 - [ ] Phase 4 hook swap
 - [ ] README
 - [ ] Demo
@@ -35,6 +35,8 @@ Owner: dhirenderchoudhary
 
 2026-10-10 — Added the 3-month, 5-team fixture ledger and neatlogs replay script. ~agent
 
+2026-10-10 — Added fixture screens for login, the team ledger, person pages, the investigate player, and evidence slots. Tests read lib/fixtures.ts. ~agent
+
 2026-10-11 — Added the backend: person ledger generator, reconcile with tests, agent step loop with 503 recovery, auth and run routes, and neatlogs init with per-step WORKFLOW traces. ~dhirender
 
 2026-10-11 — Hardened the backend: per-run poll queue, step errors become retryable snapshots, alert 503 is an errored TOOL span, state and outbox use tmp on Vercel, x-neatlogs-trace-id header. ~dhirender
@@ -48,3 +50,9 @@ Owner: dhirenderchoudhary
 2026-10-11 — Ran trace A (claude-opus-4.6, 2 retries, 3671 tokens) and trace B (nova-lite, 0 retries, 1448 tokens) on the LiteLLM key. A first trace B on nova-micro changed one intent label and was rejected. Hello trace sent. ~dhirender
 
 2026-10-11 — Enabled Entire for the repo with commit linking always and Cursor agent hooks. ~agent
+
+2026-10-11 — Login posts to POST /api/auth. Env names for the LiteLLM key, neatlogs project, and cfo token are listed in .env.example. Values stay in .env.local. ~agent
+
+2026-10-11 — Five UI passes on the fixture screens: narrow tables scroll inside the page, a wrong password is an alert, ledger names stay underlined, the footer no longer clips, and a swipe hint shows when columns sit off-screen. ~agent
+
+2026-10-11 — Screens read ledger/invoices.csv (8,032 rows, five teams, 21,270,693 tokens, $41.09). The 14-day demo headline and fixture people are off the pages. Investigate posts to /api/runs. ~agent
