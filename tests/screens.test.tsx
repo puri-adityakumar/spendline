@@ -110,6 +110,33 @@ describe("investigate player", () => {
   })
 })
 
+describe("investigate run", () => {
+  const findings = [
+    { personId: "maya-chen", badge: "retry", title: "", amountUsd: 2, fixture: false },
+    { personId: "jonah-patel", badge: "expensive-model", title: "", amountUsd: 1, fixture: false },
+    { personId: "alex-kim", badge: "untracked-key", title: "", amountUsd: 19, fixture: true },
+    { personId: "alex-kim", badge: "duplicate", title: "", amountUsd: 27, fixture: true },
+  ] as const
+  const at = (step: "act", status: "error" | "done", detail: string, outbox: string | null = null) => ({
+    snapshot: { id: "r1", step, status, detail, findings: [...findings], outbox },
+    traceId: "c1d34e8341c9d1a6291d1552cd2b9d4b",
+  })
+  const log = [at("act", "error", "Alert tool returned 503"), at("act", "done", "Wrote outbox/alert.md", "outbox/alert.md")]
+  const html = renderToStaticMarkup(<InvestigateScreen snapshot={log[1].snapshot} mode="investigate" log={log} />)
+
+  it("shows the 503, the recovery, and the four findings with Alex marked fixture", () => {
+    expect(html).toContain("Alert tool returned 503")
+    expect(html).toContain("Wrote outbox/alert.md")
+    expect(html).toContain("trace c1d34e8341c9d1a6291d1552cd2b9d4b")
+    expect(html.match(/data-badge="destructive"/g)).toHaveLength(4)
+    expect(html).toContain("$19.00")
+    expect(html).toContain("$27.00")
+    expect(html.match(/>fixture</g)).toHaveLength(2)
+    expect(html).not.toContain("Priya")
+    expect(html).not.toContain("Sam")
+  })
+})
+
 describe("evidence slots", () => {
   const html = renderToStaticMarkup(<EvidencePage />)
 
@@ -125,6 +152,12 @@ describe("evidence slots", () => {
     expect(html.toLowerCase()).toContain("trace b minus trace a")
     expect(html).toContain("3,671")
     expect(html).toContain("1,448")
+    expect(html).toContain("-2,223 tokens")
+    expect(html).toContain("c1d34e8341c9d1a6291d1552cd2b9d4b")
+    expect(html).toContain("5e723ee0c57b481a316ee7546cc4a331")
+    expect(html).toContain("6 of 6 tickets")
+    expect(html).toContain("$41.09")
+    expect(html).toContain("Impact: advance")
     expect(html).not.toContain("Alex")
     expect(html).not.toContain("$49")
     expect(html.toLowerCase()).not.toContain("fixture")

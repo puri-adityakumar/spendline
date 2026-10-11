@@ -9,7 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "vitest run",
+    "test": "vitest run && node --test \"lib/**/*.test.ts\" \"app/**/*.test.ts\"",
     "ledger:generate": "node ledger/generate.ts 20260701",
     "cfo:csv": "node evidence/cfo-input.ts",
     "workload:before": "node --env-file-if-exists=.env.local workload/run.ts before",

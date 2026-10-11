@@ -16,12 +16,14 @@ const cfoUsage = await import("./cfo/usage/route.ts");
 const cfoScenarios = await import("./cfo/scenarios/route.ts");
 const cfoSpec = await import("./cfo/openapi.json/route.ts");
 
-const post = (body: unknown) => new Request("http://local/api", { method: "POST", body: JSON.stringify(body) });
+process.env.ADMIN_PASSWORD = randomUUID();
+const post = (body: unknown, cookie = "") => new Request("http://local/api", { method: "POST", body: JSON.stringify(body), headers: { cookie } });
+const signIn = async () => (await auth.POST(post({ password: process.env.ADMIN_PASSWORD }))).headers.get("set-cookie")!.split(";")[0];
+const startRun = async (mode: string) => runs.POST(post({ mode }, await signIn()));
 const poll = async (id: string) => (await run.GET(new Request("http://local/api"), { params: Promise.resolve({ id }) })).json();
 
 test("POST /api/auth sets the session cookie for the right password and 401s otherwise", async () => {
-  const password = randomUUID();
-  process.env.ADMIN_PASSWORD = password;
+  const password = process.env.ADMIN_PASSWORD!;
   const ok = await auth.POST(post({ password }));
   assert.equal(ok.status, 204);
   assert.match(ok.headers.get("set-cookie") ?? "", /^spendline_session=[0-9a-f]+; HttpOnly; Path=\//);
@@ -33,7 +35,7 @@ test("POST /api/auth sets the session cookie for the right password and 401s oth
 
 for (const mode of ["investigate"]) {
   test(`a ${mode} run polls through the contract with the 503 then the outbox`, async () => {
-    const { id } = await (await runs.POST(post({ mode }))).json();
+    const { id } = await (await startRun(mode)).json();
     assert.equal(typeof id, "string");
 
     const seen = [];
@@ -53,7 +55,7 @@ for (const mode of ["investigate"]) {
 }
 
 test("a fix run without a LiteLLM key reports it at act and retries", async () => {
-  const { id } = await (await runs.POST(post({ mode: "fix" }))).json();
+  const { id } = await (await startRun("fix")).json();
   const seen = [];
   for (let i = 0; i < 6; i++) seen.push(await poll(id));
   assert.deepEqual(
@@ -66,7 +68,7 @@ test("a fix run without a LiteLLM key reports it at act and retries", async () =
 });
 
 test("overlapping polls advance one step each", async () => {
-  const { id } = await (await runs.POST(post({ mode: "investigate" }))).json();
+  const { id } = await (await startRun("investigate")).json();
   const seen = await Promise.all(Array.from({ length: 7 }, () => poll(id)));
   assert.deepEqual(
     seen.map((s) => `${s.step}:${s.status}`).sort(),
@@ -74,8 +76,14 @@ test("overlapping polls advance one step each", async () => {
   );
 });
 
+test("starting a run needs the session cookie", async () => {
+  assert.equal((await runs.POST(post({ mode: "investigate" }))).status, 401);
+  assert.equal((await runs.POST(post({ mode: "investigate" }, "spendline_session=forged"))).status, 401);
+  assert.equal((await startRun("investigate")).status, 200);
+});
+
 test("bad mode is 400 and an unknown run is 404", async () => {
-  assert.equal((await runs.POST(post({ mode: "other" }))).status, 400);
+  assert.equal((await startRun("other")).status, 400);
   assert.equal((await run.GET(new Request("http://local/api"), { params: Promise.resolve({ id: "missing" }) })).status, 404);
 });
 
