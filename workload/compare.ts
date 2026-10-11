@@ -60,5 +60,18 @@ Intent labels in trace B match trace A on ${agree} of ${total} tickets.
 Trace B minus trace A: ${b.totalTokens - a.totalTokens} tokens, ${usd(b.totalCostUsd - a.totalCostUsd)}.
 ${a.totalCostUsd === 0 && b.totalCostUsd === 0 ? "\nneatlogs reported no cost for these LiteLLM model names, so the saving is stated in tokens only.\n" : ""}`;
 
+const side = (run: WorkloadRun, t: TraceSummary) => ({
+  traceId: t.traceId,
+  ...run.config,
+  draftCalls: run.draftCalls,
+  spans: t.spansCount,
+  totalTokens: t.totalTokens,
+  totalCostUsd: t.totalCostUsd,
+});
+
 writeFileSync(`${root}evidence/compare.md`, md);
+writeFileSync(
+  `${root}evidence/compare.json`,
+  `${JSON.stringify({ before: side(before, a), after: side(after, b), labelsAgree: agree, labelsTotal: total }, null, 2)}\n`,
+);
 console.log(md);

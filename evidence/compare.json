@@ -1,0 +1,22 @@
+{
+  "before": {
+    "traceId": "c1d34e8341c9d1a6291d1552cd2b9d4b",
+    "classify_model": "claude-opus-4.6",
+    "max_retries": 2,
+    "draftCalls": 18,
+    "spans": 49,
+    "totalTokens": 3671,
+    "totalCostUsd": 0
+  },
+  "after": {
+    "traceId": "5e723ee0c57b481a316ee7546cc4a331",
+    "classify_model": "nova-lite",
+    "max_retries": 0,
+    "draftCalls": 6,
+    "spans": 25,
+    "totalTokens": 1448,
+    "totalCostUsd": 0
+  },
+  "labelsAgree": 6,
+  "labelsTotal": 6
+}
