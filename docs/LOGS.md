@@ -12,8 +12,8 @@ Owner: Aditya
 - [x] Person page
 - [x] Investigate player
 - [x] Evidence slots
-- [ ] Phase 4 hook swap
-- [ ] README
+- [x] Phase 4 hook swap
+- [x] README
 - [ ] Demo
 
 ## Backend
@@ -56,3 +56,5 @@ Owner: dhirenderchoudhary
 2026-10-11 — Five UI passes on the fixture screens: narrow tables scroll inside the page, a wrong password is an alert, ledger names stay underlined, the footer no longer clips, and a swipe hint shows when columns sit off-screen. ~agent
 
 2026-10-11 — Screens read ledger/invoices.csv (8,032 rows, five teams, 21,270,693 tokens, $41.09). The 14-day demo headline and fixture people are off the pages. Investigate posts to /api/runs. ~agent
+
+2026-10-11 — Phase 4 on main: investigate polls one step at a time until verify and shows the run log with neatlogs trace ids and the findings table, evidence reads compare.json, entire-graph.txt and cfo-input.csv, POST /api/runs needs the session cookie, npm test runs vitest and the node tests, and the root README lists run steps, env names and evidence. ~dhirender

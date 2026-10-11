@@ -48,6 +48,9 @@ Failures and fixes:
 - Hello trace `91c05234e2ff013f80cb6fe775fc4c2f`: one wrapped `nova-micro` call under `spendline-investigator`.
 - Failure: the first trace A run (`0f9b02d2d1762f1b7faee342da93c4e8`) reached neatlogs but crashed saving its result, because `evidence/runs/` did not exist. The script now creates it.
 
+- Phase 4 on main: the investigate screen polls the real API and shows the run log and findings, evidence reads the committed files, and starting a run needs the session cookie. A headless Chrome pass on the production build covered login, the 503 recovery run, a live "Run fix" trace B (nova-lite, 6 of 6 labels, 24 s), evidence, team pages, and a 375 px viewport.
+- Failure: during that pass, neatlogs left most new traces `pending` and then moved them to `dlq`, including traces from a bare Node script, and `neatlogs doctor --probe` timed out on readback. Spans were exported locally (checked with `NEATLOGS_LOG_SPANS_FILE`). The committed trace A and trace B were read back earlier and are unaffected.
+
 Planned, not done:
 
 - An Entire checkpoint from a fresh agent session, with its `Entire-Checkpoint` trailer.
