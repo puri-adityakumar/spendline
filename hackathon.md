@@ -58,7 +58,14 @@ Planned, not done:
 
 ## Demo
 
-Not recorded yet. Local run: `npm install`, put `NEATLOGS_API_KEY` and `ADMIN_PASSWORD` in `.env.local`, `npm run build && npm start`, then `POST /api/runs` with `{"mode":"investigate"}` and poll `GET /api/runs/:id`.
+Recorded on 2026-10-12. Two cuts, both 1920x1080 with burned-in subtitles and an .srt file:
+
+- Short cut, 1:26, with an ElevenLabs voiceover: problem, architecture, implementation, runtime with the 503 recovery, reasoning (nova-micro rejected, nova-lite shipped), result (trace B minus trace A: 2,223 fewer tokens, intent labels match on 6 of 6 tickets), Entire graph output and the cfo.ai input.
+- Full cut, 2:50, the same chapters in more detail, without voice.
+
+Both are built from screenshots of the production build and the numbers in `evidence/`. The video files are not in the repo.
+
+Local run: `npm install`, put `NEATLOGS_API_KEY` and `ADMIN_PASSWORD` in `.env.local`, `npm run build && npm start`, then `POST /api/runs` with `{"mode":"investigate"}` and poll `GET /api/runs/:id`.
 
 ## Known limitations and next steps
 
@@ -74,4 +81,4 @@ Confirmed from neatlogs.com/hackathon on 2026-10-11:
 - Demo of 3 minutes or less covering neatlogs, Entire, and cfo.ai: architecture, implementation, runtime, reasoning, result.
 - Evidence: before and after runs with numbers, neatlogs trace links or screenshots, Entire checkpoints or graph output, a cfo.ai business plan, a recovery run, `#neatHack` posts, commits dated in the window.
 
-Outstanding: an Entire checkpoint, the cfo.ai plan, the demo video, `#neatHack` posts, and the quote post.
+Outstanding: an Entire checkpoint, the cfo.ai plan, `#neatHack` posts, and the quote post.
